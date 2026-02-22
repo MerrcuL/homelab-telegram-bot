@@ -310,7 +310,7 @@ class SystemMonitor:
         return msg
 
     @staticmethod
-    def get_qbit_stats() -> str:
+    def get_qbit_client() -> Optional[qbittorrentapi.Client]:
         try:
             qbt = qbittorrentapi.Client(
                 host=conf.QBIT_URL,
@@ -318,15 +318,35 @@ class SystemMonitor:
                 password=conf.QBIT_PASS
             )
             qbt.auth_log_in()
+            return qbt
+        except qbittorrentapi.LoginFailed:
+            logger.error("qBittorrent login failed - check credentials")
+            return None
+        except qbittorrentapi.APIConnectionError as e:
+            logger.error(f"qBittorrent connection error: {e}")
+            return None
+        except Exception as e:
+            logger.error(f"qBittorrent client error: {e}")
+            return None
+
+    @staticmethod
+    def get_qbit_stats() -> Tuple[str, bool, bool]:
+        client = SystemMonitor.get_qbit_client()
+        if not client:
+            return "⚠️ qBit Connection Error", False, False
             
-            torrents = qbt.torrents_info()
-            transfer = qbt.transfer_info()
+        try:
+            torrents = client.torrents_info()
+            transfer = client.transfer_info()
             
             downloading = sum(1 for t in torrents if t.state in ['downloading', 'stalledDL', 'metaDL', 'forcedDL'])
             seeding = sum(1 for t in torrents if t.state in ['uploading', 'stalledUP', 'queuedUP', 'forcedUP'])
             paused = sum(1 for t in torrents if 'paused' in t.state.lower())
             error = sum(1 for t in torrents if 'error' in t.state.lower())
             completed = sum(1 for t in torrents if t.progress >= 1.0)
+            
+            has_active = (downloading + seeding) > 0
+            has_torrents = len(torrents) > 0
             
             dl_speed = format_bytes(transfer.dl_info_speed) + "/s"
             up_speed = format_bytes(transfer.up_info_speed) + "/s"
@@ -343,9 +363,9 @@ class SystemMonitor:
             if error > 0:
                 msg += f"⚠️ <b>Errors:</b> {error}\n"
             msg += f"<b>Completed:</b> {completed}/{len(torrents)}"
-            return msg
+            return msg, has_active, has_torrents
         except Exception as e:
-            return f"⚠️ qBit Connection Error: {str(e)[:50]}"
+            return f"⚠️ qBit Connection Error: {str(e)[:50]}", False, False
 
     @staticmethod
     def get_local_ip() -> str:
@@ -525,15 +545,13 @@ async def handle_main_menu(query: CallbackQuery):
     await query.answer()
     await show_main_menu(query)
 
-@router.callback_query(F.data.in_({'menu_docker', 'menu_qbit', 'menu_processes'}))
+@router.callback_query(F.data.in_({'menu_docker', 'menu_processes'}))
 async def handle_modules(query: CallbackQuery):
     await query.answer()
     data = query.data
     
     if data == 'menu_docker':
         text = await run_blocking(SystemMonitor.get_docker_stats)
-    elif data == 'menu_qbit':
-        text = await run_blocking(SystemMonitor.get_qbit_stats)
     elif data == 'menu_processes':
         text = await run_blocking(SystemMonitor.get_process_info)
         
@@ -542,6 +560,70 @@ async def handle_modules(query: CallbackQuery):
         [InlineKeyboardButton(text="↩️ Back", callback_data='menu_main', style='primary')]
     ])
     await safe_edit_message(query, text, kb)
+
+@router.callback_query(F.data == 'menu_qbit')
+async def handle_menu_qbit(query: CallbackQuery):
+    await query.answer()
+    text, has_active, has_torrents = await run_blocking(SystemMonitor.get_qbit_stats)
+    
+    kb_list = [
+        [InlineKeyboardButton(text="🔄️ Refresh", callback_data='menu_qbit')]
+    ]
+    
+    if has_torrents:
+        if has_active:
+            kb_list.append([InlineKeyboardButton(text="⏸️ Pause All", callback_data='qbit_pause_all')])
+        else:
+            kb_list.append([InlineKeyboardButton(text="▶️ Resume All", callback_data='qbit_resume_all')])
+            
+    kb_list.append([InlineKeyboardButton(text="↩️ Back", callback_data='menu_main', style='primary')])
+    
+    kb = InlineKeyboardMarkup(inline_keyboard=kb_list)
+    await safe_edit_message(query, text, kb)
+
+@router.callback_query(F.data.in_({'qbit_pause_all', 'qbit_resume_all'}))
+async def handle_qbit_actions(query: CallbackQuery):
+    action = query.data
+    
+    def do_action():
+        client = SystemMonitor.get_qbit_client()
+        if not client:
+            return False, "Failed to connect to qBittorrent"
+        try:
+            if action == 'qbit_pause_all':
+                client.torrents_pause(torrent_hashes='all')
+                return True, "✅ All torrents paused successfully"
+            else:
+                client.torrents_resume(torrent_hashes='all')
+                return True, "✅ All torrents resumed successfully"
+        except Exception as e:
+            return False, f"❌ Error: {str(e)[:50]}"
+    
+    success, msg = await run_blocking(do_action)
+    
+    if success:
+        # Give qBittorrent a moment to update states before fetching stats
+        await asyncio.sleep(1.0)
+    
+    text, has_active, has_torrents = await run_blocking(SystemMonitor.get_qbit_stats)
+    
+    kb_list = [
+        [InlineKeyboardButton(text="🔄️ Refresh", callback_data='menu_qbit')]
+    ]
+    
+    if has_torrents:
+        if has_active:
+            kb_list.append([InlineKeyboardButton(text="⏸️ Pause All", callback_data='qbit_pause_all')])
+        else:
+            kb_list.append([InlineKeyboardButton(text="▶️ Resume All", callback_data='qbit_resume_all')])
+            
+    kb_list.append([InlineKeyboardButton(text="↩️ Back", callback_data='menu_main', style='primary')])
+    
+    kb = InlineKeyboardMarkup(inline_keyboard=kb_list)
+    await safe_edit_message(query, text, kb)
+    
+    # Show toast with result
+    await query.answer(msg)
 
 @router.callback_query(F.data == 'menu_system')
 async def handle_menu_system(query: CallbackQuery):
