@@ -12,7 +12,7 @@ if [ -n "$CPU_TEMP" ] && [ "$CPU_TEMP" -ge "$CPU_MAX" ]; then
 fi
 
 # Check drives (drivetemp)
-# Check SATA drives (e.g., the 4TB HDD via drivetemp)
+# Check SATA drives
 sensors | grep -A 2 'drivetemp' | grep 'temp1:' | while read -r line; do
     DRIVE_TEMP=$(echo "$line" | awk '{print $2}' | tr -d '+°C' | cut -d. -f1)
     if [ -n "$DRIVE_TEMP" ] && [ "$DRIVE_TEMP" -ge "$DRIVE_MAX" ]; then
@@ -20,7 +20,7 @@ sensors | grep -A 2 'drivetemp' | grep 'temp1:' | while read -r line; do
     fi
 done
 
-# Check NVMe drives (e.g., the 256GB SSD)
+# Check NVMe drives
 sensors | grep -A 2 'nvme' | grep 'Composite:' | while read -r line; do
     NVME_TEMP=$(echo "$line" | awk '{print $2}' | tr -d '+°C' | cut -d. -f1)
     if [ -n "$NVME_TEMP" ] && [ "$NVME_TEMP" -ge "$DRIVE_MAX" ]; then

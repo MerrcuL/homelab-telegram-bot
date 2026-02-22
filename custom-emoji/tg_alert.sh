@@ -18,5 +18,5 @@ MESSAGE=$1
 # 3. Execute the curl command using the loaded variables
 curl -s -X POST "https://api.telegram.org/bot${BOT_TOKEN}/sendMessage" \
     -d chat_id="${ADMIN_ID}" \
-    -d text="<b>⚠️SYSTEM ALERT</b>%0A${MESSAGE}" \
+    -d text="<b><tg-emoji emoji-id=\"5447644880824181073\">⚠️</tg-emoji> SYSTEM ALERT</b>%0A${MESSAGE}" \
     -d parse_mode="HTML" > /dev/null
