@@ -48,7 +48,7 @@ sudo apt install python3-venv lm-sensors smartmontools curl
 To use the official speedtest required by this bot, you must install it from Ookla's repository, not the default Debian `speedtest-cli`:
 
 ```
-curl -s [https://packagecloud.io/install/repositories/ookla/speedtest-cli/script.deb.sh](https://packagecloud.io/install/repositories/ookla/speedtest-cli/script.deb.sh) | sudo bash
+curl -s https://packagecloud.io/install/repositories/ookla/speedtest-cli/script.deb.sh | sudo bash
 sudo apt install speedtest
 ```
 
@@ -64,8 +64,8 @@ sudo apt install speedtest
         
     
     ```
-    git clone [https://github.com/merrcul/server-bot.git](https://github.com/merrcul/server-bot.git)
-    cd server-bot
+    git clone https://github.com/merrcul/homelab-telegram-bot.git
+    homelab-telegram-bot
     
     # Choose your preferred version:
     cd default-emoji
