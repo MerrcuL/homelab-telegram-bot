@@ -6,7 +6,7 @@ A powerful, secure Telegram bot for managing a Debian-based home server (OpenMed
 
 - **System Dashboard:** Real-time CPU, RAM, Disk usage, Uptime, and Temperatures (CPU & NVMe/SATA).
     
-- **Power Monitoring:** Integrates with **Shelly Plug S** to show live power draw, voltage, and total energy consumption.
+- **Power Monitoring:** Integrates with **Shelly Plug S** to show live power draw, voltage, total energy consumption, and estimated costs.
     
 - **Docker Manager:** View running containers with clickable links to their Web UIs (auto-mapped ports).
     
@@ -65,7 +65,7 @@ sudo apt install speedtest
     
     ```
     git clone https://github.com/merrcul/homelab-telegram-bot.git
-    homelab-telegram-bot
+    cd homelab-telegram-bot
     
     # Choose your preferred version:
     cd default-emoji
@@ -83,7 +83,7 @@ sudo apt install speedtest
 3. **Install Python Dependencies:**
     
     ```
-    pip install -r requirements.txt
+    pip install aiogram docker psutil python-dotenv qbittorrent-api requests
     ```
     
 4. **Configure Environment Variables:** Create a `.env` file in the project root:
@@ -102,8 +102,13 @@ sudo apt install speedtest
     # Optional
     HDD_UUID=your-disk-uuid-here
     SPEEDTEST_ENABLED=true
+    KWH_COST=0.40
+    CACHE_DURATION=5
+    REQUEST_TIMEOUT=3
     ```
-    > **Note:** You can create bot and get your token from [@BotFather](https://t.me/BotFather) and your ID from [@Get My ID](https://t.me/GetMyIDBot) Bots
+    
+    > **Note:** You can create your bot and get your token from [@BotFather](https://t.me/BotFather "null") and your ID from [@Get My ID](https://www.google.com/search?q=https://t.me/GetMyIDBot "null").
+    
 
 ## ❕ Critical Configuration
 
