@@ -111,7 +111,7 @@ sudo apt install speedtest
     REQUEST_TIMEOUT=3
     ```
     
-    > **Note:** You can create your bot and get your token from [@BotFather](https://t.me/BotFather "null") and your ID from [@Get My ID](https://www.google.com/search?q=https://t.me/GetMyIDBot "null").
+    > **Note:** You can create your bot and get your token from [@BotFather](https://t.me/BotFather) and your ID from [@userinfobot](https://t.ms/userinfobot).
     
 
 ## ❕ Critical Configuration
