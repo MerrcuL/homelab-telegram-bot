@@ -64,7 +64,7 @@ sudo apt install speedtest
     
     - **`default-emoji/`**: Uses standard Unicode emojis. Works for all users.
         
-    - **`custom-emoji/`**: Uses custom emojis. You can get preferred emojis’ IDs with [@Get Emoji ID](https://t.me/GetEmojiIdBot "null") Bot. **Requires the bot owner to have an active Telegram Premium subscription.**
+    - **`custom-emoji/`**: Uses custom emojis. You can get preferred emojis’ IDs with [@Get Emoji ID](https://t.me/GetEmojiIdBot) Bot. **Requires the bot owner to have an active Telegram Premium subscription.**
         
     
     ```
@@ -111,7 +111,7 @@ sudo apt install speedtest
     REQUEST_TIMEOUT=3
     ```
     
-    > **Note:** You can create your bot and get your token from [@BotFather](https://t.me/BotFather) and your ID from [@userinfobot](https://t.ms/userinfobot).
+    > **Note:** You can create your bot and get your token from [@BotFather](https://t.me/BotFather) and your ID from [@userinfobot](https://t.me/userinfobot).
     
 
 ## ❕ Critical Configuration
