@@ -26,7 +26,7 @@ A powerful, secure Telegram bot for managing a Debian-based home server (OpenMed
         
 - **Security:** Middleware-based Admin ID locking. The bot ignores all interactions from unauthorized users.
 
-  <img width="267" height="598" alt="menu_main" src="https://github.com/user-attachments/assets/e933f868-d87b-442f-b69e-9132f94e1510" /> <img width="267" height="598" alt="menu_power" src="https://github.com/user-attachments/assets/9f152c9f-d943-4a77-b5da-7b054457c021" /> <img width="267" height="598" alt="confirm_reboot" src="https://github.com/user-attachments/assets/5ad83ced-95e2-4e9a-9c0a-5e8d099d8af2" />
+  <img width="240" height="538" alt="menu_main" src="https://github.com/user-attachments/assets/e933f868-d87b-442f-b69e-9132f94e1510" /> <img width="240" height="538" alt="menu_power" src="https://github.com/user-attachments/assets/9f152c9f-d943-4a77-b5da-7b054457c021" /> <img width="240" height="538" alt="confirm_reboot" src="https://github.com/user-attachments/assets/5ad83ced-95e2-4e9a-9c0a-5e8d099d8af2" />
 
 
 
