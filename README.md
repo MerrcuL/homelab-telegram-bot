@@ -10,7 +10,7 @@ A powerful, secure Telegram bot for managing a Debian-based home server (OpenMed
     
 - **Docker Manager:** View running containers with clickable links to their Web UIs (auto-mapped ports).
     
-- **qBittorrent Integration:** Live download/upload speeds, active torrent counts, Pause All / Resume All button and notifications about completed downloads.
+- **qBittorrent Integration:** Live download/upload speeds, active torrent counts, pause / resume all and notifications about completed downloads.
     
 - **System Controls:** Remote Reboot and Shutdown.
     
